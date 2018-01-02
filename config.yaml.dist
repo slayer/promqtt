@@ -1,0 +1,45 @@
+brokers:
+#  - name: MQTT broker SSL
+#    url: ssl://broker.mqttdashboard.com:8883
+##    client_cert: /path/to/cert.pem # Use either user/pass auth, certificates or both at the same time.
+##    client_key: /path/to/cert.key
+##    ca_chain: /path/to/ca-chain.pem
+##    username: test
+##    password: xxx
+#    topic: '#'
+
+  - name: FlyHub NONSSL
+    url: 'tcp://flyhub.org:1883'
+    username: xxxxxx@gmail.com
+    password: 'xxxxxx'
+    topic: '#'
+    metric_prefix: promqtt_
+    metric_name: /(\w+)\z    # get latest path item
+    labels: (?P<user>[\w.@\-]+)/(?P<device>[\w.@\-\p{L}]+)/.* # regexp to extract labels from topic
+
+rules:
+  counters:
+    - (timestamp|uptime)$
+    - uptime$
+    - pmwh$
+    - pmkwh$
+    # - pmkw$
+  gauges:
+    - .*dsw[0-9]$
+    - .*rssi$
+    - freemem$
+    - mlx.$
+    - pmv$
+    - pmw$
+    - pmc$
+    - dhtt[0-9]$
+    - dsw[0-9]$
+    - bmpp$
+    - dhth[0-9]$
+    - output[0-9]+$
+    - bmpt$
+    - amh$
+    - light$
+    - adc$
+    - vdd$
+    - volt_average$
