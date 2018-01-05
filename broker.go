@@ -115,6 +115,7 @@ func (broker *Broker) Init() {
 	return
 }
 
+// NewTLSConfig returns configured `tls.Config`
 // Stolen from https://github.com/shoenig/go-mqtt/blob/master/samples/ssl.go
 func NewTLSConfig(broker *Broker) *tls.Config {
 	// Import trusted certificates from CAChain - purely for verification - not sent to TLS server

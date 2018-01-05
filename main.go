@@ -18,6 +18,7 @@ var build string
 const debug = false
 
 var (
+	// Log is a main logger
 	Log   log.Logger = log.Root()
 	queue            = make(chan rawMessage, 100)
 
