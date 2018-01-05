@@ -28,5 +28,4 @@ echo "=> Killing exporter (pid=${service_pid})"
 kill $service_pid
 
 echo "=> Checking result"
-grep 'probe_mqtt_started_total{broker="ssl://broker.mqttdashboard.com:8883",name="mqtt broker SSL"} [[:digit:]]' test/out.log
-grep 'probe_mqtt_started_total{broker="tcp://test.mosquitto.org:1883",name="mqtt broker NONSSL"} [[:digit:]]' test/out.log
+grep 'promqtt_mqtt_messages_received_total [[:digit:]]' test/out.log
