@@ -89,13 +89,13 @@ func (broker *Broker) Connect() {
 	broker.client = mqtt.NewClient(clientOptions)
 
 	if token := broker.client.Connect(); token.Wait() && token.Error() != nil {
-		Log.Error("Client.Connect", token.Error())
+		Log.Error("Client.Connect", "err", token.Error())
 		return
 	}
 	Log.Info("Connected", "name", broker.Name, "url", broker.URL)
 
 	if token := broker.client.Subscribe(broker.Topic, qos, nil); token.Wait() && token.Error() != nil {
-		Log.Error("Client Subscribe", token.Error())
+		Log.Error("Client Subscribe", "err", token.Error())
 		return
 	}
 }

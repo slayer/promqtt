@@ -7,9 +7,9 @@ build = GOOS=$(1) GOARCH=$(2) go build -ldflags "-X=main.build=$(build_version)"
 tar = cd build && tar -cvzf $(appname).$(1)-$(2).tar.gz $(appname)$(3) && rm $(appname)$(3)
 zip = cd build && zip $(appname).$(1)-$(2).zip $(appname)$(3) && rm $(appname)$(3)
 
-.PHONY: all test clean fmt vendor-deps vendor windows darwin linux
+.PHONY: all test clean fmt get windows darwin linux
 
-all: windows darwin linux
+all: get linux windows darwin
 
 test:
 	./test/run-integration-tests.sh
@@ -20,14 +20,9 @@ clean:
 fmt:
 	@gofmt -l -w $(sources)
 
-vendor-deps:
+get:
 	@echo ">> Fetching dependencies"
-	go get github.com/rancher/trash
-
-vendor: vendor-deps
-	rm -r vendor/
-	${GOPATH}/bin/trash -u
-	${GOPATH}/bin/trash
+	go get -v
 
 ##### LINUX #####
 linux: build/$(appname).linux-amd64.tar.gz

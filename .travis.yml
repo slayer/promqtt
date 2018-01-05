@@ -8,11 +8,13 @@ services:
 
 before_install:
   - set -e
+  - sudo apt-get install -y mosquitto mosquitto-clients
+  - /usr/sbin/mosquitto &
+  - sleep 1
 
 script:
   - make
-  - tar xfvz build/promqtt-*.linux-amd64.tar.gz
-  - ls -lA
+  - tar xfvz build/promqtt.linux-amd64.tar.gz
   - make test
 
 after_success:
