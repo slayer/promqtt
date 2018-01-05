@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"io/ioutil"
+	"os"
 
 	log "github.com/inconshreveable/log15"
 
@@ -20,18 +21,12 @@ var (
 	Log   log.Logger = log.Root()
 	queue            = make(chan rawMessage, 100)
 
-	probeDuration = prometheus.NewHistogramVec(
-		prometheus.HistogramOpts{
-			Name: "promqtt_mqtt_duration_seconds",
-			Help: "Time taken to execute probe.",
-		}, []string{"name", "url"})
-
 	configFile    = flag.String("config.file", "config.yaml", "promqtt configuration file.")
 	listenAddress = flag.String("web.listen-address", ":9214", "The address to listen on for HTTP requests.")
+	logLevel      = flag.String("log.level", "info", "Log level.")
 )
 
 func init() {
-	prometheus.MustRegister(probeDuration)
 	prometheus.MustRegister(messagesPublished)
 	prometheus.MustRegister(messagesReceived)
 }
@@ -39,7 +34,10 @@ func init() {
 func main() {
 	flag.Parse()
 	yamlFile, err := ioutil.ReadFile(*configFile)
-
+	lvl, _ := log.LvlFromString(*logLevel)
+	Log.SetHandler(
+		log.LvlFilterHandler(lvl,
+			log.StreamHandler(os.Stderr, log.TerminalFormat())))
 	if err != nil {
 		Log.Crit("Error reading config file", "err", err)
 	}

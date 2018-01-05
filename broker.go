@@ -12,6 +12,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+const (
+	inactivityLimit = 60 * time.Second
+)
+
 var (
 	messagesPublished = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
@@ -38,7 +42,14 @@ func (broker *Broker) Start() {
 	for {
 		broker.Connect()
 		for broker.client.IsConnected() {
-			time.Sleep(5 * time.Second)
+			time.Sleep(20 * time.Second)
+
+			timeout := time.Now().Sub(broker.lastReceivedMessageAt)
+			if timeout > inactivityLimit {
+				Log.Info("Inactivity timeout, restating...", "timeout", timeout)
+				broker.client.Disconnect(5)
+				break
+			}
 		}
 	}
 }
@@ -63,7 +74,10 @@ func (broker *Broker) Connect() {
 		SetAutoReconnect(true).
 		AddBroker(broker.URL)
 
+	// Reset acivity watchdog
+	broker.lastReceivedMessageAt = time.Now()
 	clientOptions.SetDefaultPublishHandler(func(client mqtt.Client, msg mqtt.Message) {
+		broker.lastReceivedMessageAt = time.Now()
 		messagesReceived.WithLabelValues(broker.Name, broker.URL).Inc()
 		queue <- rawMessage{
 			broker:  broker,
@@ -78,14 +92,12 @@ func (broker *Broker) Connect() {
 		Log.Error("Client.Connect", token.Error())
 		return
 	}
-	Log.Debug("Connected", "name", broker.Name, "url", broker.URL)
-	// defer broker.client.Disconnect(5)
+	Log.Info("Connected", "name", broker.Name, "url", broker.URL)
 
 	if token := broker.client.Subscribe(broker.Topic, qos, nil); token.Wait() && token.Error() != nil {
 		Log.Error("Client Subscribe", token.Error())
 		return
 	}
-	// defer broker.client.Unsubscribe(broker.Topic)
 }
 
 // Init initialized regexps
