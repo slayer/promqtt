@@ -35,8 +35,8 @@ func initMetrics(conf *config) {
 	}
 }
 
-// NewMessage builds message from rawMessage
-func NewMessage(raw rawMessage) *message {
+// newMessage builds message from rawMessage
+func newMessage(raw rawMessage) *message {
 	msg := message{
 		rawMessage: raw,
 	}

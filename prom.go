@@ -17,7 +17,7 @@ var (
 func startPrometheusExporter() {
 	for raw := range queue {
 		if isLooksLikeAMetric(raw.payload) {
-			msg := NewMessage(raw)
+			msg := newMessage(raw)
 			updateMetric(msg)
 		}
 	}
