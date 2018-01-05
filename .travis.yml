@@ -18,19 +18,21 @@ script:
   - make test
 
 after_success:
-  - export DOCKER_BUILD_IMAGE="slayer/promqtt"
+  - export DOCKER_BUILD_IMAGE="${DOCKER_USERNAME}/promqtt"
+  - export DOCKER_USERNAME="${DOCKER_USERNAME:-slayer}"
+  - export TRAVIS_TAG="${TRAVIS_TAG:-latest}"
   - |
-    if [[ -n "${TRAVIS_TAG?}" || "${TRAVIS_BRANCH?}" == master ]]; then
-      docker login -u "${DOCKER_USERNAME?}" -p "${DOCKER_PASSWORD?}"
+    if [[ -n "${TRAVIS_TAG}" || "${TRAVIS_BRANCH?}" == master ]]; then
+      docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD?}"
       docker build -t "${DOCKER_BUILD_IMAGE?}" .
 
-      version=""
+      version="latest"
       if [[ -n "${TRAVIS_TAG?}" ]]; then
         version="${TRAVIS_TAG?}"
       else
         version="${TRAVIS_COMMIT:0:7}-dev"
       fi
 
-      docker tag "${DOCKER_BUILD_IMAGE?}" "${DOCKER_BUILD_IMAGE?}:${version?}"
-      docker push "${DOCKER_BUILD_IMAGE?}:${version?}"
+      docker tag "${DOCKER_BUILD_IMAGE}" "${DOCKER_BUILD_IMAGE}:${version}"
+      docker push "${DOCKER_BUILD_IMAGE}:${version?}"
     fi
