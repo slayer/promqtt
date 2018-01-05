@@ -84,16 +84,23 @@ func (msg *message) getValue() (val float64, err error) {
 	return
 }
 
-func (msg *message) validLabels() bool {
-	// Log.Debug("validLabels", "labels", msg.labels, "labelNames", msg.broker.labelNames)
+func (msg *message) validLabels() (ok bool) {
 	if msg.broker.labelNames == nil {
-		// No labels
+		// Broker has no labels, no need to check it in message
 		return true
 	}
-	if msg.labels == nil || len(msg.labels) == 0 {
-		return false
+	ok = true
+
+	// no labels in msg found, but broker have
+	ok = !(msg.labels == nil || len(msg.labels) == 0)
+	// msg labels has exact len as broker's labels len
+	ok = ok && len(msg.labels) == len(msg.broker.labelNames)
+
+	if !ok {
+		Log.Debug("Fail to parse labels", "topic", msg.topic)
 	}
-	return len(msg.labels) == len(msg.broker.labelNames)
+
+	return ok
 }
 
 func (msg *message) isCounter() bool {

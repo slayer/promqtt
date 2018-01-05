@@ -2,6 +2,7 @@ package main
 
 import (
 	"regexp"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -31,8 +32,9 @@ type Broker struct {
 	MetricPrefix string `yaml:"metric_prefix"`
 	Labels       string `yaml:"labels"`
 	// internal fields
-	labelsRegexp     *regexp.Regexp
-	labelNames       []string
-	metricNameRegexp *regexp.Regexp
-	client           mqtt.Client
+	labelsRegexp          *regexp.Regexp
+	labelNames            []string
+	metricNameRegexp      *regexp.Regexp
+	client                mqtt.Client
+	lastReceivedMessageAt time.Time
 }

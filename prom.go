@@ -29,8 +29,8 @@ func updateMetric(msg *message) {
 	} else if msg.isGauge() {
 		updateGauge(msg)
 	} else {
-		Log.Debug("Looks like a metric but not exists in rules",
-			"name", msg.metricName(), "payload", msg.payload)
+		// Log.Debug("Looks like a metric but not exists in rules",
+		// 	"name", msg.metricName(), "payload", msg.payload, "topic", msg.topic)
 	}
 }
 
@@ -40,7 +40,6 @@ func updateCounter(msg *message) {
 		return
 	}
 	if !msg.validLabels() {
-		Log.Warn("Fail to parse labels", "topic", msg.topic)
 		return
 	}
 	counter := getCounter(msg)
@@ -61,7 +60,6 @@ func updateGauge(msg *message) {
 		return
 	}
 	if !msg.validLabels() {
-		Log.Warn("Fail to parse labels", "topic", msg.topic)
 		return
 	}
 	gauge := getGauge(msg)
