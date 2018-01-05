@@ -18,6 +18,7 @@ script:
   - make test
 
 after_success:
+  - export DOCKER_BUILD_IMAGE="slayer/promqtt"
   - |
     if [[ -n "${TRAVIS_TAG?}" || "${TRAVIS_BRANCH?}" == master ]]; then
       docker login -u "${DOCKER_USERNAME?}" -p "${DOCKER_PASSWORD?}"
