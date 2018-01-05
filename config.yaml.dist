@@ -10,11 +10,13 @@ brokers:
 
   - name: localhost mosquitto
     url: 'tcp://localhost:1883'
-    username: xxxxxx@gmail.com
-    password: 'xxxxxx'
+    # username: xxxxxx@gmail.com
+    # password: 'xxxxxx'
     topic: '#'
     metric_prefix: promqtt_
     metric_name: /(\w+)\z    # get latest path item
+    # for example topic format is "user@domain.com/DEVICE-ID/sensor"
+    # we can extract user and device as labels for the metric as named regexp subexpressions:
     labels: (?P<user>[\w.@\-]+)/(?P<device>[\w.@\-\p{L}]+)/.* # regexp to extract labels from topic
 
 rules:

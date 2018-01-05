@@ -15,7 +15,6 @@ before_install:
 script:
   - make
   - tar xfvz build/promqtt.linux-amd64.tar.gz
-  - ls -lA
   - make test
 
 after_success:
