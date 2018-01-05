@@ -8,8 +8,8 @@ brokers:
 ##    password: xxx
 #    topic: '#'
 
-  - name: FlyHub NONSSL
-    url: 'tcp://flyhub.org:1883'
+  - name: localhost mosquitto
+    url: 'tcp://localhost:1883'
     username: xxxxxx@gmail.com
     password: 'xxxxxx'
     topic: '#'
